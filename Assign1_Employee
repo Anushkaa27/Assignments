@@ -1,0 +1,139 @@
+using System;
+
+interface IEmployee
+{
+    void AcceptDetails();
+    void CalculateSalary();
+    void DisplayDetails();
+}
+
+class Employee : IEmployee
+{
+    protected int EmpId;
+    protected string EmpName;
+    protected double Salary;
+    protected DateTime Doj;
+
+    public void AcceptDetails()
+    {
+        Console.WriteLine("Enter Employee ID:");
+        EmpId = Convert.ToInt32(Console.ReadLine());
+
+        Console.WriteLine("Enter Employee Name:");
+        EmpName = Console.ReadLine();
+
+        Console.WriteLine("Enter Salary:");
+        Salary = Convert.ToDouble(Console.ReadLine());
+
+        Console.WriteLine("Enter Date of Joining (YYYY-MM-DD):");
+        Doj = DateTime.Parse(Console.ReadLine());
+    }
+
+    public virtual void CalculateSalary()
+    {
+        Salary = 0;
+    }
+
+    public void DisplayDetails()
+    {
+        Console.WriteLine($"Employee ID: {EmpId}");
+        Console.WriteLine($"Employee Name: {EmpName}");
+        Console.WriteLine($"Salary: {Salary:C}");
+        Console.WriteLine($"Date of Joining: {Doj.ToShortDateString()}");
+    }
+}
+
+class Permanent : Employee
+{
+    private double BasicPay;
+    private double HRA;
+    private double DA;
+    private double PF;
+
+    public void GetDetails()
+    {
+        Console.WriteLine("Enter Basic Pay:");
+        BasicPay = Convert.ToDouble(Console.ReadLine());
+
+        Console.WriteLine("Enter HRA:");
+        HRA = Convert.ToDouble(Console.ReadLine());
+
+        Console.WriteLine("Enter DA:");
+        DA = Convert.ToDouble(Console.ReadLine());
+
+        Console.WriteLine("Enter PF:");
+        PF = Convert.ToDouble(Console.ReadLine());
+    }
+
+    public void ShowDetails()
+    {
+        Console.WriteLine($"Basic Pay: {BasicPay:C}");
+        Console.WriteLine($"HRA: {HRA:C}");
+        Console.WriteLine($"DA: {DA:C}");
+        Console.WriteLine($"PF: {PF:C}");
+    }
+
+    public override void CalculateSalary()
+    {
+        Salary = BasicPay + HRA + DA - PF;
+    }
+}
+
+class Trainee : Employee
+{
+    private double Bonus;
+    private string ProjectName;
+
+    public void GetTraineeDetails()
+    {
+        Console.WriteLine("Enter Bonus:");
+        Bonus = Convert.ToDouble(Console.ReadLine());
+
+        Console.WriteLine("Enter Project Name:");
+        ProjectName = Console.ReadLine();
+    }
+
+    public void ShowTraineeDetails()
+    {
+        Console.WriteLine($"Bonus: {Bonus:C}");
+        Console.WriteLine($"Project Name: {ProjectName}");
+    }
+
+    public override void CalculateSalary()
+    {
+        base.CalculateSalary(); 
+
+        if (ProjectName == "Banking")
+            Salary += 0.05 * Salary; 
+        else if (ProjectName == "Insurance")
+            Salary += 0.10 * Salary;
+    }
+}
+
+//CLIENT PROGRAM
+class Program
+{
+    static void Main()
+    {
+
+        Permanent permanentEmployee = new Permanent();
+        Trainee traineeEmployee = new Trainee();
+
+        permanentEmployee.AcceptDetails();
+        traineeEmployee.AcceptDetails();
+
+        permanentEmployee.GetDetails();
+        traineeEmployee.GetTraineeDetails();
+
+        permanentEmployee.CalculateSalary();
+        traineeEmployee.CalculateSalary();
+
+        Console.WriteLine("\nPermanent Employee Details:");
+        permanentEmployee.DisplayDetails();
+        permanentEmployee.ShowDetails();
+
+        Console.WriteLine("\nTrainee Employee Details:");
+        traineeEmployee.DisplayDetails();
+        traineeEmployee.ShowTraineeDetails();
+    }
+}
